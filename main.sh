@@ -25,18 +25,21 @@ function fileCreate {
     fi
 }
 
+#write the todo to file /temp/todo
 function writeToFile {
-    todo=$1
+    #get time
+    local dt=$(getDate)
+    todo=$1 
     file=$(pwd)/temp/todo
-    echo $file
-    echo $todo >> $file
+    echo $todo :: $dt >> $file
 }
 
 # get the date
 function getDate {
     day=$(date +"%d-%m-%Y")
-    time=$(dat +"%H-%M-%S")
-    return $day $time
+    time=$(date +"%H-%M-%S")
+    #echo works kind of like return here
+    echo $day $time
 }
 
 # check if first and second argument matches 
@@ -48,10 +51,19 @@ function checkYN {
     fi
 }
 
+function showFilesTemp {
+    echo ls ./temp
+    return 1
+}
+
 function main {
     while [ 0 ];do
         echo "Do you have something todo?(y/n)"
         read yn
+        #now make a function to show all the possible
+        #lists in temp with numbering and let user select
+        #showFilesTemp
+        #take the first character
         response=${yn:0:1}
         if checkYN $response "y" ; then
             recordResponse
