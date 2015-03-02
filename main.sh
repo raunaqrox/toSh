@@ -5,10 +5,10 @@ function recordResponse {
     echo Enter : 
     read todo
     folder=$(pwd)/temp
-    file=$(pwd)/temp/todo
+    file=$(pwd)/temp/$1
     directoryCreate $folder 
     fileCreate $file
-    writeToFile $todo
+    writeToFile $todo $1
 }
 
 # create directory if not exists
@@ -30,7 +30,8 @@ function writeToFile {
     #get time
     local dt=$(getDate)
     todo=$1 
-    file=$(pwd)/temp/todo
+    topic=$2
+    file=$(pwd)/temp/$topic
     echo $todo :: $dt >> $file
 }
 
@@ -52,13 +53,29 @@ function checkYN {
 }
 
 function showFilesTemp {
-    echo ls ./temp
-    return 1
+    if [ -d "temp" ]; then
+        echo `ls -1 ./temp | nl`
+        return 1
+    else
+        echo "No topics so far, do some work!"
+    fi
 }
 
 function main {
     while [ 0 ];do
-        echo "Do you have something todo?(y/n)"
+        echo "Current todo topics"
+        showFilesTemp
+        echo "Choose/Create topic?(y/n)"
+        read yn
+        response=${yn:0:1}
+        if checkYN $response "y" ; then
+            echo "Enter topic name"
+            read topic
+        else 
+            #use general topic
+            topic="todo"
+        fi
+        echo "Do you have something todo for topic $topic?(y/n)"
         read yn
         #now make a function to show all the possible
         #lists in temp with numbering and let user select
@@ -66,7 +83,7 @@ function main {
         #take the first character
         response=${yn:0:1}
         if checkYN $response "y" ; then
-            recordResponse
+            recordResponse $topic
         else 
             echo "do you want to quit?(q)"
             read q
